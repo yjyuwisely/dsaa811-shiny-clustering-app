@@ -1,4 +1,3 @@
-
 # DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
 # Author: Yeongjin Yu
 # global.R - Loads libraries and data
@@ -19,11 +18,16 @@ library(tidyr)  # For pivot_wider function
 # Read the gene expression data - rows are cell lines, columns are genes
 nci60_data <- read.csv("NCI60_data.csv", row.names = 1)
 
-# Read the cancer type labels file - skip the header row
-nci60_labels <- read.csv("NCI60_labs.csv", skip = 1)
+# Read the cancer type labels
+nci60_labels_raw <- read.csv("NCI60_labs.csv")
 
-# Extract just the cancer types (column 3)
-cancer_types <- nci60_labels[, 3]
+# Extract cancer types (second column)
+# Skip the first row if it's a header row (contains 'x')
+if(tolower(nci60_labels_raw[1, 2]) == "x") {
+  cancer_types <- nci60_labels_raw[-1, 2]
+} else {
+  cancer_types <- nci60_labels_raw[, 2]
+}
 
 # Create a clean labels data frame
 nci60_labels <- data.frame(
@@ -37,7 +41,8 @@ if(nrow(nci60_labels) != nrow(nci60_data)) {
                 ") doesn't match number of data rows (", nrow(nci60_data), ")"))
   
   # Trim to match data dimensions
-  nci60_labels <- nci60_labels[1:nrow(nci60_data), , drop = FALSE]
+  min_rows <- min(nrow(nci60_data), nrow(nci60_labels))
+  nci60_labels <- nci60_labels[1:min_rows, , drop = FALSE]
 }
 
 # Print confirmation of data dimensions
