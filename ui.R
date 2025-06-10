@@ -41,7 +41,7 @@ ui <- dashboardPage(
       h4("Dendrogram Options", style = "padding-left: 15px;"),
       
       sliderInput("cut_height", "Cut Height for Clusters:", 
-                  min = 0, max = 100, value = 50),
+                  min = 0, max = 100, value = 80),
       
       checkboxInput("color_labels", "Color Labels by Cancer Type", value = TRUE),
       
@@ -74,25 +74,25 @@ ui <- dashboardPage(
         ),
         
         fluidRow(
-        box(
-          title = "Number of Clusters", status = "warning", solidHeader = TRUE,
-          width = 12,
-          verbatimTextOutput("num_clusters")
-        )
-      ),
-      
-        fluidRow(
             box(
               title = "Heatmap of Gene Expression", status = "primary", solidHeader = TRUE,
               width = 12, height = 500,
               plotOutput("heatmap", height = "450px")
             ),
           
+            fluidRow(
+              box(
+                title = "Number of Clusters", status = "warning", solidHeader = TRUE,
+                width = 12,
+                verbatimTextOutput("num_clusters")
+              )
+            ),
+            
           fluidRow(width = 12,
             box(
               title = "Cluster Information", status = "info", solidHeader = TRUE,
-              width = 12, height = 500,
-              DTOutput("cluster_info")
+              width = 12, height = "auto",
+              DTOutput("cluster_info", width = "100%")
             )
           )
         )
