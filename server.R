@@ -16,7 +16,7 @@ server <- function(input, output, session) {
     # Select top n most variable genes
     top_genes <- order(gene_variance, decreasing = TRUE)[1:input$num_genes]
     
-    output$num_clusters <- renderPrint({
+    output$num_clusters <- renderText({
       length(unique(clusters()))
     })
     

@@ -84,7 +84,7 @@ ui <- dashboardPage(
               box(
                 title = "Number of Clusters", status = "warning", solidHeader = TRUE,
                 width = 12,
-                verbatimTextOutput("num_clusters")
+                textOutput("num_clusters")
               )
             ),
             
