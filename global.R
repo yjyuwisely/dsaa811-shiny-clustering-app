@@ -2,6 +2,7 @@
 # Author: Yeongjin Yu
 # global.R - Loads libraries and data
 
+# Task 1 ----
 # Load required libraries
 library(shiny)
 library(shinydashboard)
@@ -13,6 +14,9 @@ library(dplyr)
 library(cluster)
 library(RColorBrewer)
 library(tidyr)  # For pivot_wider function
+
+library(factoextra)  # For cluster validation plots
+library(animation)   # For step-by-step visualization
 
 # Load the data (at startup)
 # Read the gene expression data - rows are cell lines, columns are genes
@@ -50,3 +54,18 @@ linkage_methods <- c(
   "Single" = "single", 
   "Ward's" = "ward.D2"
 )
+
+
+# Task 2 ----
+heart_data <- read.csv("wcgs.csv", stringsAsFactors = TRUE)
+
+# Remove non-numeric columns for clustering
+heart_numeric <- heart_data[, sapply(heart_data, is.numeric)]
+
+# Define clustering method options for Task 2
+clustering_methods <- c(
+  "K-means (from scratch)" = "kmeans_scratch"
+)
+
+# K-means parameters
+k_values <- 2:10
