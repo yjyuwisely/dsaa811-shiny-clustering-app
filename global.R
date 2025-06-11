@@ -1,5 +1,6 @@
-# DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
-# and Task 2: K-means Clustering with wcgs Data
+# DSAA811 Final Exam (Autumn 2025)
+# Task 1: Hierarchical Clustering (NCI60 Gene Expression Data)
+# Task 2: K-means Clustering (WCGS Heart Disease Data)
 # Author: Yeongjin Yu
 # global.R - Loads libraries and data
 

@@ -1,5 +1,6 @@
-# DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
-# and Task 2: K-means Clustering with wcgs Data
+# DSAA811 Final Exam (Autumn 2025)
+# Task 1: Hierarchical Clustering (NCI60 Gene Expression Data)
+# Task 2: K-means Clustering (WCGS Heart Disease Data)
 # Author: Yeongjin Yu
 # ui.R - User Interface
 
@@ -76,8 +77,11 @@ ui <- dashboardPage(
       
       h4("Visualization Controls", style = "padding-left: 15px;"),
       
-      sliderInput("iteration_step", "Show Iteration Step:", 
-                  min = 0, max = 50, value = 0, step = 1),
+      sliderInput("iteration_step", 
+                  "Show Iteration Step:",
+                  min = 0, 
+                  max = 100,  # Set to same as max_iterations maximum
+                  value = 0),
       
       checkboxInput("show_centers", "Show Cluster Centers", value = TRUE),
       
@@ -86,7 +90,7 @@ ui <- dashboardPage(
                    style = "color: #fff; background-color: #28a745; border-color: #28a745; width: 90%; margin-bottom: 10px;"),
       
       hr(),
-      actionButton("reset_task2", "Reset Task 2", 
+      actionButton("reset_task2", "Reset to Defaults", 
                    icon = icon("sync"), 
                    style = "color: #fff; background-color: #337ab7; border-color: #2e6da4; width: 90%;")
     )
@@ -108,7 +112,7 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   title = "Heatmap of Gene Expression", status = "primary", solidHeader = TRUE,
-                  width = 12, height = 500,
+                  width = 12, height = 580,
                   plotOutput("heatmap", height = "450px")
                 )
               ),
@@ -154,14 +158,16 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   title = "Elbow Method for Optimal K", status = "warning", solidHeader = TRUE,
-                  width = 6, height = 400,
-                  plotOutput("elbow_plot", height = "350px")
+                  width = 6, height = 460,
+                  plotOutput("elbow_plot", height = "350px"),
+                  helpText("Note: This plot evaluates clustering for a range of K values (2–8), not just the selected value above.")
                 ),
                 
                 box(
                   title = "Within-Cluster Sum of Squares", status = "success", solidHeader = TRUE,
-                  width = 6, height = 400,
-                  DTOutput("wcss_table")
+                  width = 6, height = 460,
+                  DTOutput("wcss_table"),
+                  helpText("Note: This table summarises WCSS for K = 2 to 8, independent of the selected clustering above.")
                 )
               )
       ),

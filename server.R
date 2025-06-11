@@ -1,11 +1,12 @@
-# DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
-# and Task 2: K-means Clustering with wcgs Data
+# DSAA811 Final Exam (Autumn 2025)
+# Task 1: Hierarchical Clustering (NCI60 Gene Expression Data)
+# Task 2: K-means Clustering (WCGS Heart Disease Data)
 # Author: Yeongjin Yu
 # server.R - Server Logic
 
 server <- function(input, output, session) {
   
-  ## ========== Task 1: Hierarchical Clustering ==========
+  ## Task 1: Hierarchical Clustering ----
   processed_data <- reactive({
     transposed_data <- t(nci60_data)
     gene_variance <- apply(transposed_data, 2, var)
@@ -80,9 +81,10 @@ server <- function(input, output, session) {
     }
   })
   
-  # Heatmap (legend to the right)
+  # Heatmap (legend to the right) 
   output$heatmap <- renderPlot({
-    par(mar = c(5, 4, 4, 8))
+    # Increase right margin from 8 to 12 to accommodate legend
+    par(mar = c(5, 4, 4, 12))  # bottom, left, top, right
     data_matrix <- as.matrix(processed_data())
     cluster_order <- hclust_result()$order
     ordered_data <- data_matrix[cluster_order, ]
@@ -108,13 +110,17 @@ server <- function(input, output, session) {
             xlab = paste("Top", input$num_genes, "Variable Genes"),
             ylab = "Cancer Cell Lines (ordered by clustering)",
             RowSideColors = row_colors)
-    legend("right", 
+    
+    # Move legend further to the right and make it smaller
+    legend(x = par("usr")[2] + 0.02 * diff(par("usr")[1:2]), 
+           y = par("usr")[4], 
            legend = cancer_types,
            fill = cancer_colors,
            title = "Cancer Types",
-           cex = 0.7,
-           xpd = TRUE
-    )
+           cex = 0.65,  # Smaller text
+           xpd = TRUE,
+           xjust = 0,
+           yjust = 1)
   })
   
   output$cluster_info <- renderDT({
@@ -156,7 +162,7 @@ server <- function(input, output, session) {
     updateSelectInput(session, "color_palette", selected = "Spectral")
   })
   
-  ## ========== Task 2: K-means (from scratch) ==========
+  ## Task 2: K-means (from scratch) ----
   
   kmeans_result <- eventReactive(input$run_kmeans, {
     set.seed(123)
@@ -198,6 +204,23 @@ server <- function(input, output, session) {
     )
   })
   
+  # Update slider range when kmeans completes
+  observe({
+    res <- kmeans_result()
+    if (!is.null(res)) {
+      updateSliderInput(session, "iteration_step",
+                        max = res$n_iter,
+                        value = min(input$iteration_step, res$n_iter))
+    }
+  })
+  
+  # Update iteration step slider max when max_iterations changes
+  observe({
+    updateSliderInput(session, "iteration_step",
+                      max = input$max_iterations,
+                      value = 0)
+  })
+  
   output$kmeans_plot <- renderPlot({
     res <- kmeans_result()
     if (is.null(res)) return()
@@ -229,10 +252,17 @@ server <- function(input, output, session) {
   output$convergence_status <- renderText({
     res <- kmeans_result()
     if (is.null(res)) return("Status: Not run yet.")
-    if (input$iteration_step == res$n_iter)
-      "Status: Converged"
-    else
-      "Status: Still running"
+    
+    if (input$iteration_step > res$n_iter) {
+      return(paste("⚠️ Warning: Iteration", input$iteration_step, 
+                   "requested, but algorithm converged after", res$n_iter, "iterations."))
+    }
+    
+    if (input$iteration_step == res$n_iter) {
+      "Status: Algorithm Converged"
+    } else {
+      paste("Viewing iteration", input$iteration_step, "of", res$n_iter)
+    }
   })
   
   # Elbow plot
@@ -264,7 +294,9 @@ server <- function(input, output, session) {
   observeEvent(input$reset_task2, {
     updateSliderInput(session, "k_clusters", value = 3)
     updateSliderInput(session, "max_iterations", value = 50)
-    updateSliderInput(session, "iteration_step", value = 0)
+    updateSliderInput(session, "iteration_step", 
+                      value = 0, 
+                      max = 50)  # Reset max back to default
     updateCheckboxInput(session, "show_centers", value = TRUE)
   })
 }
