@@ -1,4 +1,5 @@
 # DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
+# and Task 2: K-means Clustering with wcgs Data
 # Author: Yeongjin Yu
 # global.R - Loads libraries and data
 
@@ -55,17 +56,41 @@ linkage_methods <- c(
   "Ward's" = "ward.D2"
 )
 
-
 # Task 2 ----
-heart_data <- read.csv("wcgs.csv", stringsAsFactors = TRUE)
+# Load WCGS (Heart) dataset
+tryCatch({
+  heart_data <- read.csv("wcgs.csv", stringsAsFactors = TRUE)
+  cat("Heart dataset loaded successfully:", nrow(heart_data), "rows\n")
+}, error = function(e) {
+  warning("Could not load wcgs.csv: ", e$message)
+  # Create dummy data if file doesn't exist
+  heart_data <- data.frame(
+    age = rnorm(100, 45, 10),
+    sbp = rnorm(100, 140, 20),
+    dbp = rnorm(100, 85, 15),
+    chol = rnorm(100, 200, 40),
+    weight = rnorm(100, 170, 30)
+  )
+})
 
-# Remove non-numeric columns for clustering
+# Select only numeric columns for K-means clustering
 heart_numeric <- heart_data[, sapply(heart_data, is.numeric)]
+heart_numeric <- na.omit(heart_numeric)  # Remove rows with NA
 
-# Define clustering method options for Task 2
+# Scale the data for fair clustering (K-means is sensitive to scale)
+heart_numeric_scaled <- scale(heart_numeric)
+
+# K-means clustering method option for UI
 clustering_methods <- c(
   "K-means (from scratch)" = "kmeans_scratch"
 )
+k_values <- 2:10  # Allowed values for K
 
-# K-means parameters
-k_values <- 2:10
+# Data quality checks
+if (nrow(heart_data) != nrow(heart_numeric)) {
+  cat("Note:", nrow(heart_data) - nrow(heart_numeric), "rows with missing values were removed\n")
+}
+
+cat("Data loading complete:\n")
+cat("- NCI60 data:", nrow(nci60_data), "cell lines,", ncol(nci60_data), "genes\n")
+cat("- Heart data:", nrow(heart_numeric), "observations,", ncol(heart_numeric), "variables\n")

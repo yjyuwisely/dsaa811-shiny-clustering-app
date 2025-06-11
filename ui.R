@@ -1,5 +1,5 @@
-
 # DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
+# and Task 2: K-means Clustering with wcgs Data
 # Author: Yeongjin Yu
 # ui.R - User Interface
 
@@ -14,7 +14,7 @@ ui <- dashboardPage(
     sidebarMenu(
       id = "tabs",
       menuItem("Task 1: Hierarchical Clustering", tabName = "task1", icon = icon("sitemap")),
-      menuItem("Task 2: K-means Clustering", tabName = "task2", icon = icon("chart-scatter")),
+      menuItem("Task 2: K-means Clustering", tabName = "task2", icon = icon("chart-line")),
       menuItem("Educational Content", tabName = "education", icon = icon("book")),
       menuItem("About", tabName = "about", icon = icon("info-circle"))
     ),
