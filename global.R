@@ -1,4 +1,3 @@
-
 # DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
 # Author: Yeongjin Yu
 # global.R - Loads libraries and data

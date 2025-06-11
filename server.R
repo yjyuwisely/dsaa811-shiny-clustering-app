@@ -1,4 +1,3 @@
-
 # DSAA811 Final Exam Task 1: Hierarchical Clustering with NCI60 Data
 # Author: Yeongjin Yu
 # server.R - Server Logic
@@ -76,10 +75,10 @@ server <- function(input, output, session) {
     cutree(hclust_result(), h = cut_height)
   })
   
-  # Render dendrogram
+  # 1. Render dendrogram
   output$dendrogram <- renderPlot({
-    # Set plotting parameters
-    par(mar = c(5, 4, 2, 8))
+    # Set plotting parameters: increase right margin to 14
+    par(mar = c(5, 4, 2, 14))
     
     # Plot the dendrogram
     plot(dendrogram(), 
@@ -95,29 +94,27 @@ server <- function(input, output, session) {
     
     # Add a legend for cancer types if colors are enabled
     if(input$color_labels) {
-      # Get unique cancer types
       labs <- nci60_labels$x
       cancer_types <- unique(labs)
-      
-      # Create color palette
       cancer_colors <- brewer.pal(min(9, length(cancer_types)), input$color_palette)
       if(length(cancer_types) > 9) {
         cancer_colors <- colorRampPalette(cancer_colors)(length(cancer_types))
       }
       names(cancer_colors) <- cancer_types
       
-      # Add legend
-      legend("topright", 
-             legend = cancer_types, 
-             fill = cancer_colors, 
+      legend("bottomright",
+             legend = cancer_types,
+             fill = cancer_colors,
              title = "Cancer Types",
-             cex = 0.7, 
-             inset = c(-0.15, 0))
+             cex = 0.7,
+             xpd = TRUE,
+             inset = c(-0.11, 0)) # Adjust the first value as needed for your screen
     }
   })
   
   # Render heatmap
   output$heatmap <- renderPlot({
+    par(mar = c(5, 4, 4, 8))
     # Get processed data
     data_matrix <- as.matrix(processed_data())
     
@@ -147,27 +144,28 @@ server <- function(input, output, session) {
     # Create row annotation colors
     row_colors <- cancer_colors[cancer_labels[cluster_order]]
     
-    # Plot the heatmap
+    # 2. Plot the heatmap
     heatmap(scaled_data, 
-            Rowv = NA,  # Don't reorder rows (already ordered)
-            Colv = NA,  # Don't cluster columns
+            Rowv = NA,
+            Colv = NA,
             col = heatmap_colors,
-            scale = "none",  # Data already scaled
-            labRow = NA,  # Hide row labels (too many)
-            labCol = NA,  # Hide column labels (too many)
-            margins = c(5, 5),
+            scale = "none",
+            labRow = NA,
+            labCol = NA,
+            margins = c(5, 2),  # Reduce left margin from 5 to 2
             main = "Gene Expression Heatmap",
             xlab = paste("Top", input$num_genes, "Variable Genes"),
             ylab = "Cancer Cell Lines (ordered by clustering)",
             RowSideColors = row_colors)
     
-    # Add a legend for cancer types
     legend("right", 
            legend = cancer_types,
            fill = cancer_colors,
            title = "Cancer Types",
            cex = 0.7,
-           inset = c(-0.15, 0))
+           xpd = TRUE,
+           #inset = c(-0.11, 0)
+           )
   })
   
   # Render cluster information
@@ -189,7 +187,7 @@ server <- function(input, output, session) {
       stringsAsFactors = FALSE
     )
     
-    # Count cancer types per cluster
+    # 3. Count cancer types per cluster
     cluster_summary <- cluster_data %>%
       group_by(Cluster, CancerType) %>%
       summarise(Count = n(), .groups = 'drop') %>%
@@ -197,7 +195,7 @@ server <- function(input, output, session) {
       mutate(TotalSize = rowSums(across(where(is.numeric)))) %>%
       arrange(Cluster)
     
-    # Format for display
+    # 4. Format for display
     datatable(cluster_summary, 
               options = list(
                 pageLength = 10,
