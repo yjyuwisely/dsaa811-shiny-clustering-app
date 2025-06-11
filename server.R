@@ -235,13 +235,13 @@ server <- function(input, output, session) {
       "Status: Still running"
   })
   
-  # Elbow plot: WSS for each K
+  # Elbow plot
   output$elbow_plot <- renderPlot({
     dat <- as.matrix(heart_numeric_scaled)
     wss <- numeric()
     for (k in 2:8) {
       set.seed(123)
-      clust <- kmeans(dat, centers = k, nstart = 10)
+      clust <- kmeans(dat, centers = k, nstart = 10, iter.max = 100)
       wss[k] <- clust$tot.withinss
     }
     plot(2:8, wss[2:8], type = "b", xlab = "Number of Clusters (K)",
@@ -254,7 +254,7 @@ server <- function(input, output, session) {
     dat <- as.matrix(heart_numeric_scaled)
     WCSS <- sapply(2:8, function(k) {
       set.seed(123)
-      clust <- kmeans(dat, centers = k, nstart = 10)
+      clust <- kmeans(dat, centers = k, nstart = 10, iter.max = 100)
       clust$tot.withinss
     })
     data.frame(K = 2:8, WCSS = WCSS)
