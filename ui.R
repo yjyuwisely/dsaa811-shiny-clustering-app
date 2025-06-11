@@ -17,7 +17,7 @@ ui <- dashboardPage(
       menuItem("Task 1: Hierarchical Clustering", tabName = "task1", icon = icon("sitemap")),
       menuItem("Task 2: K-means Clustering", tabName = "task2", icon = icon("chart-line")),
       menuItem("Educational Content", tabName = "education", icon = icon("book")),
-      menuItem("About", tabName = "about", icon = icon("info-circle"))
+      menuItem("Datasets", tabName = "datasets", icon = icon("database")) 
     ),
     
     # Task 1 conditionalPanel ---- 
@@ -176,7 +176,9 @@ ui <- dashboardPage(
       tabItem(tabName = "education",
               fluidRow(
                 box(
-                  title = "Understanding Hierarchical Clustering", status = "primary", solidHeader = TRUE,
+                  title = "Understanding Hierarchical Clustering", 
+                  status = "primary", 
+                  solidHeader = TRUE,
                   width = 12,
                   
                   h3("What is Hierarchical Clustering?"),
@@ -212,14 +214,7 @@ ui <- dashboardPage(
                     tags$li("Horizontal lines connect clusters that are merged."),
                     tags$li("The height of horizontal lines indicates the distance at which clusters are merged.")
                   ),
-                  p("By cutting the dendrogram at a specific height, we can determine the number of clusters.")
-                )
-              ),
-              
-              fluidRow(
-                box(
-                  title = "Hierarchical Clustering Step-by-Step", status = "info", solidHeader = TRUE,
-                  width = 12,
+                  p("By cutting the dendrogram at a specific height, we can determine the number of clusters."),
                   
                   h3("Algorithm Steps (Agglomerative Clustering)"),
                   tags$ol(
@@ -228,9 +223,65 @@ ui <- dashboardPage(
                     tags$li("Find the closest pair of clusters and merge them."),
                     tags$li("Update the distance matrix to reflect the merged cluster."),
                     tags$li("Repeat steps 3-4 until all observations are in one cluster.")
+                  )
+                )
+              ),
+              
+              fluidRow(
+                box(
+                  title = "Understanding K-means Clustering", 
+                  status = "warning", 
+                  solidHeader = TRUE,
+                  width = 12,
+                  
+                  h3("What is K-means Clustering?"),
+                  p("K-means clustering is a method used to group data into a specific number of clusters (K). Each data point is grouped with others that are similar, and each group has a centre called a centroid. The algorithm keeps adjusting the groups until the centroids no longer move much."),
+                  
+                  p("This process helps to:"),
+                  tags$ul(
+                    tags$li("Discover hidden patterns in data"),
+                    tags$li("Group individuals or items based on shared characteristics")
                   ),
                   
-                  h3("Advantages and Limitations"),
+                  h3("How K-means Clustering Works (Step-by-Step)"),
+                  tags$ol(
+                    tags$li("Choose the number of clusters (K) you want to create."),
+                    tags$li("Randomly place K initial centroids (starting centres of clusters)."),
+                    tags$li("Assign each data point to the closest centroid (this forms clusters)."),
+                    tags$li("Recalculate the centroid of each cluster based on the average of its points."),
+                    tags$li("Repeat steps 3–4 until the centroids stop changing or a maximum number of steps is reached.")
+                  ),
+                  
+                  h3("Key Parameters"),
+                  tags$ul(
+                    tags$li(strong("K (Number of clusters):"), " The number of groups to divide the data into. You can test different K values to find the best one."),
+                    tags$li(strong("Maximum Iterations:"), " Limits how many times the algorithm repeats.")
+                  ),
+                  
+                  h3("Choosing the Best Value of K"),
+                  p("One way to choose the best K is by using the Elbow Method:"),
+                  tags$ul(
+                    tags$li("Plot the Within-Cluster Sum of Squares (WCSS) for different K values."),
+                    tags$li("Look for a \"bend\" or \"elbow\" in the plot. This point often suggests a good choice for K, where adding more clusters doesn't improve the result much.")
+                  ),
+                  
+                  h3("Interpreting the K-means Output"),
+                  tags$ul(
+                    tags$li(strong("Coloured points:"), " Represent different clusters."),
+                    tags$li(strong("Centroids (× symbols):"), " Show the centre of each cluster."),
+                    tags$li(strong("Iteration steps:"), " Help you understand how the algorithm updates clusters and moves centroids during the process.")
+                  )
+                )
+              ),
+              
+              fluidRow(
+                box(
+                  title = "Advantages and Limitations", 
+                  status = "info", 
+                  solidHeader = TRUE,
+                  width = 6,
+                  
+                  h3("Hierarchical Clustering"),
                   h4("Advantages:"),
                   tags$ul(
                     tags$li("No need to specify the number of clusters in advance."),
@@ -244,12 +295,35 @@ ui <- dashboardPage(
                     tags$li("Sensitive to noise and outliers."),
                     tags$li("Cannot revisit once a merge/split decision is made (greedy algorithm).")
                   )
+                ),
+                
+                box(
+                  title = "Advantages and Limitations", 
+                  status = "danger", 
+                  solidHeader = TRUE,
+                  width = 6,
+                  
+                  h3("K-means Clustering"),
+                  h4("Advantages:"),
+                  tags$ul(
+                    tags$li("Simple to implement and understand"),
+                    tags$li("Efficient for large datasets"),
+                    tags$li("Allows user control over cluster number")
+                  ),
+                  
+                  h4("Limitations:"),
+                  tags$ul(
+                    tags$li("You must specify K in advance"),
+                    tags$li("Sensitive to initial starting points"),
+                    tags$li("May not handle complex or overlapping clusters well"),
+                    tags$li("Only works well with numeric data")
+                  )
                 )
               )
       ),
       
       # About tab content ---- 
-      tabItem(tabName = "about",
+      tabItem(tabName = "datasets",
               fluidRow(
                 box(
                   title = "About the NCI60 Dataset", status = "info", solidHeader = TRUE,
@@ -272,11 +346,45 @@ ui <- dashboardPage(
                     tags$li("Identify patterns that might correlate with cancer types"),
                     tags$li("Explore how different clustering parameters affect these groupings"),
                     tags$li("Visualize gene expression patterns across different cancer types")
+                  )
+                )
+              ),
+              
+              fluidRow(
+                box(
+                  title = "About the WCGS Dataset", status = "warning", solidHeader = TRUE,
+                  width = 12,
+                  
+                  h3("Western Collaborative Group Study (WCGS) Dataset"),
+                  p("The Western Collaborative Group Study (WCGS) dataset contains clinical and behavioural data from a large cohort of men studied over time to investigate risk factors for coronary heart disease (CHD). This data includes measures such as age, blood pressure, cholesterol levels, weight, smoking habits, and behavioural patterns."),
+                  
+                  h4("Dataset Composition:"),
+                  tags$ul(
+                    tags$li(strong("Samples:"), " 3,154 male participants"),
+                    tags$li(strong("Features:"), " Includes variables such as age, height, weight, systolic and diastolic blood pressure (SBP/DBP), cholesterol levels, smoking behaviour, and long-term health outcomes"),
+                    tags$li(strong("Target Outcome:"), " Incidence of coronary heart disease (CHD)")
                   ),
                   
-                  h3("About This Application"),
+                  h3("Application in This Shiny App"),
+                  p("In Task 2, we apply the K-means clustering algorithm to this dataset to:"),
+                  tags$ul(
+                    tags$li("Explore natural groupings of individuals based on health and behavioural factors"),
+                    tags$li("Observe how cluster assignments relate to heart disease risk"),
+                    tags$li("Illustrate the step-by-step progress of the K-means algorithm"),
+                    tags$li("Use the Elbow Method and Within-Cluster Sum of Squares (WCSS) to assess clustering quality")
+                  )
+                )
+              ),
+              
+              fluidRow(
+                box(
+                  title = "About This Application", status = "success", solidHeader = TRUE,
+                  width = 12,
+                  
+                  h3("Application Details"),
                   p("This Shiny app was developed as part of the DSAA811 final exam (Autumn 2025)."),
-                  p("Author: Yeongjin Yu")
+                  p(strong("Author:"), " Yeongjin Yu"),
+                  p(strong("Purpose:"), " Demonstrate advanced clustering techniques using real-world health and cancer datasets")
                 )
               )
       )
